@@ -1,0 +1,29 @@
+[project]
+name = "karaoke-pipeline"
+version = "0.1.0"
+description = "カラオケ練習アプリ用の曲データ前処理（Demucs 分離＋F0 抽出＋音符化）"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "scipy",
+  "librosa",
+  "soundfile",
+  "imageio-ffmpeg",
+  "mutagen",
+  "lameenc",
+]
+
+[project.optional-dependencies]
+# 重い依存（torch 等）。torch は先に CPU 版/CUDA 版を選んで入れておくこと（README 参照）
+ml = ["demucs", "torchcrepe"]
+dev = ["pytest"]
+
+[project.scripts]
+karaoke-prep = "karaoke_pipeline.cli:main"
+
+[tool.setuptools]
+packages = ["karaoke_pipeline"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: 重い依存（torch/demucs）を使うテスト"]
