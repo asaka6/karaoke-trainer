@@ -75,7 +75,7 @@ async function singThrough(page, keyValue) {
   await page.waitForSelector('.result:not([hidden])', { timeout: (duration + 20) * 1000 });
   return {
     total: +(await page.textContent('.r-total')),
-    pitch: +(await page.textContent('.r-pitch')),
+    pitch: parseFloat(await page.textContent('.r-pitch')),
     sections: await page.$$eval('.sections li', (li) => li.map((x) => x.textContent)),
   };
 }
@@ -120,13 +120,26 @@ try {
       await page.screenshot({ path: `${outDir}/playing-${scheme}.png` });
       await page.click('.start');
       await page.waitForSelector('.result:not([hidden])');
-      const partial = +(await page.textContent('.r-pitch'));
+      const partial = parseFloat(await page.textContent('.r-pitch'));
       check('曲: 途中停止でも歌った範囲で採点', partial >= 85, String(partial));
+
+      // ライブラリ：再読み込み後もタップで開け、記録が残っている
+      await page.reload();
+      await page.click('#tabs button[data-mode="song"]');
+      await page.waitForSelector('.lib-open');
+      await page.screenshot({ path: `${outDir}/library-${scheme}.png` });
+      const libText = await page.textContent('.lib-items');
+      check('ライブラリ: 再読み込み後も曲と自己ベストが残る', libText.includes('テスト曲') && /\d+点/.test(libText), libText);
+      await page.click('.lib-open');
+      await page.waitForSelector('.start:not([disabled])');
+      const info2 = await page.textContent('.song-info');
+      check('ライブラリ: タップで伴奏ごと開ける', info2.includes('accompaniment.wav'), info2);
     }
 
     // 選曲提案
     await page.click('#tabs button[data-mode="suggest"]');
     await page.setInputFiles('.index-file', `${outDir}/index.json`);
+    await page.waitForFunction(() => document.querySelectorAll('.list').length === 3 && document.body.textContent.includes('そのまま曲'));
     const lists = await page.$$eval('.list', (ls) => ls.map((l) => l.textContent));
     if (scheme === 'light') {
       check('選曲: そのまま歌える', lists[0].includes('そのまま曲'), lists[0]);
@@ -134,6 +147,13 @@ try {
       check('選曲: 難しい', lists[2].includes('広すぎる曲'), lists[2]);
     }
     await page.screenshot({ path: `${outDir}/suggest-${scheme}.png`, fullPage: true });
+    if (scheme === 'light') {
+      // ライブラリにある曲は選曲から直接練習へ
+      await page.click('.song-item.playable');
+      await page.waitForSelector('.player:not([hidden]) .start:not([disabled])');
+      const k = await page.$eval('.key-sel', (s) => s.value);
+      check('選曲: タップで曲タブに移りおすすめキー(-5)で開く', k === '-5', `key=${k}`);
+    }
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
     check(`${scheme}: 横スクロールなし`, !overflow);

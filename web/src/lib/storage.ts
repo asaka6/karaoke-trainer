@@ -41,3 +41,9 @@ export function saveRanges(r: VoiceRanges): boolean {
 export function extendRange(r: Range | null, midi: number): Range {
   return r ? { min: Math.min(r.min, midi), max: Math.max(r.max, midi) } : { min: midi, max: midi };
 }
+
+/** 選曲タブで読み込んだ index.json */
+export const INDEX_KEY = 'karaoke-trainer.index.v1';
+/** 選曲の条件（裏声も使う・オクターブ移動可） */
+export const SUGGEST_OPTS_KEY = 'karaoke-trainer.suggest.v1';
+export const loadSuggestOpts = () => load(SUGGEST_OPTS_KEY, { falsetto: true, octave: false });

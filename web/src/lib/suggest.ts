@@ -76,3 +76,9 @@ function shortage(song: Range, user: Range, allowOctave: boolean): number {
   }
   return best;
 }
+
+/** 保存済みの音域と選曲条件から、その曲のおすすめ（null = 音域未測定 or 収まらない） */
+export function recommendFit(song: Range | null, user: Range | null, allowOctave: boolean): Fit | null {
+  if (!song || !user) return null;
+  return fitsFor(song, user, allowOctave)[0] ?? null;
+}
