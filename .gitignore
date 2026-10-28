@@ -1,0 +1,33 @@
+# ---- 著作物由来のデータは絶対にコミットしない ----
+songs/
+**/songs/
+**/separated/
+*.mp3
+*.wav
+*.m4a
+*.flac
+*.ogg
+*.aac
+*.opus
+*.wma
+*.aif
+*.aiff
+*.melody.json
+index.json
+# パイプラインの出力先として使いがちな名前
+out/
+output/
+
+# ---- 開発用 ----
+node_modules/
+dist/
+.vite/
+*.log
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.DS_Store
+Thumbs.db
+web/e2e-shots/

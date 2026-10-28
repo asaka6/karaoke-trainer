@@ -1,0 +1,357 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --text: #1b1d23;
+  --muted: #6b7180;
+  --border: #dde0e8;
+  --accent: #2f6fed;
+  --accent-text: #ffffff;
+  --good: #1f9d55;
+  --bad: #d64545;
+  --target: #d98a00;
+  --guide: #8a94a8;
+  --graph-bg: #ffffff;
+  --graph-grid: #eef0f4;
+  --graph-grid-c: #c9ced8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111318;
+    --surface: #1a1d24;
+    --text: #e8eaf0;
+    --muted: #8d93a3;
+    --border: #2b303b;
+    --accent: #5b9bff;
+    --accent-text: #0b1020;
+    --good: #3ecf7a;
+    --bad: #ff6b6b;
+    --target: #f5b342;
+    --guide: #6c768c;
+    --graph-bg: #14171d;
+    --graph-grid: #1f232c;
+    --graph-grid-c: #3a404d;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.top,
+.tabs,
+#status,
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+}
+
+h1 {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+button,
+select,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 8px 14px;
+  min-height: 44px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+button.primary.live {
+  background: var(--bad);
+  border-color: var(--bad);
+  color: #fff;
+}
+
+button.small {
+  min-height: 32px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+}
+
+select {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 8px 10px;
+  min-height: 44px;
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-top: 12px;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.tabs button {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  min-height: 38px;
+  padding: 4px 16px;
+}
+
+.tabs button.on {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+#status:empty {
+  display: none;
+}
+
+.warn {
+  color: var(--bad);
+  font-size: 0.9rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.mode {
+  padding: 8px 0 24px;
+}
+
+/* ---- 音名表示 ---- */
+.readout {
+  text-align: center;
+  padding: 4px 0 8px;
+}
+
+.readout-note {
+  font-size: clamp(3rem, 16vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.readout-cents {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.meter {
+  position: relative;
+  height: 10px;
+  margin: 8px auto 4px;
+  max-width: 320px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--bad), var(--target) 30%, var(--good) 45%, var(--good) 55%, var(--target) 70%, var(--bad));
+  opacity: 0.85;
+}
+
+.meter-zero {
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--text);
+}
+
+.meter-needle {
+  position: absolute;
+  top: -5px;
+  width: 6px;
+  height: 20px;
+  margin-left: -3px;
+  border-radius: 3px;
+  background: var(--text);
+  border: 2px solid var(--surface);
+  opacity: 0;
+  transition: left 0.06s linear;
+}
+
+/* ---- グラフ ---- */
+canvas.graph {
+  display: block;
+  width: 100%;
+  height: min(46vh, 360px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--graph-bg);
+}
+
+/* ---- 音域測定 ---- */
+.seg {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.seg button {
+  flex: 1;
+  border: none;
+  border-radius: 0;
+  background: var(--surface);
+}
+
+.seg button.on {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.progress {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: var(--target);
+}
+
+.progress-bar.done {
+  background: var(--good);
+}
+
+.last-confirmed {
+  text-align: center;
+  margin: 6px 0;
+  font-size: 0.9rem;
+}
+
+.results {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.result-row.current {
+  border-color: var(--accent);
+}
+
+.result-row .lbl {
+  font-weight: 600;
+  width: 2.5em;
+}
+
+.result-row .val {
+  flex: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- ボイトレ ---- */
+.target-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.target-row .step {
+  width: 44px;
+  padding: 0;
+  font-size: 1.3rem;
+}
+
+.target-row select {
+  flex: 1;
+  min-width: 0;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  text-align: center;
+}
+
+.stats > div {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+}
+
+.stats b {
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-ok='true'] {
+  color: var(--good);
+}
+
+.meter-needle[data-ok='true'] {
+  background: var(--good);
+}
+
+.octave-note {
+  text-align: center;
+  font-size: 0.85rem;
+  margin: 6px 0;
+}
