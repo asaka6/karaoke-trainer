@@ -47,6 +47,8 @@ export class PitchGraph {
   /** 表示範囲の中心（自動追従しないときは固定値を入れる） */
   center = 57;
   autoCenter = true;
+  /** false にすると「現在」より後の点も描く（歌い終わった後の見返し用） */
+  live = true;
   private palette!: Palette;
   private dpr = 1;
 
@@ -179,7 +181,7 @@ export class PitchGraph {
     ctx.beginPath();
     let prev: number | null = null;
     for (const p of this.points) {
-      if (p.t < t0 - 0.1 || p.t > now) continue;
+      if (p.t < t0 - 0.1 || p.t > (this.live ? now : t0 + opts.windowSec + 0.1)) continue;
       if (p.midi === null) {
         prev = null;
         continue;
@@ -190,7 +192,7 @@ export class PitchGraph {
     }
     ctx.stroke();
 
-    if (opts.nowFrac < 1) {
+    if (opts.nowFrac < 1 && this.live) {
       ctx.strokeStyle = P.now;
       ctx.lineWidth = d;
       ctx.beginPath();

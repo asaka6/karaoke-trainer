@@ -3,9 +3,11 @@ import { engine } from './audio/engine';
 import { createFreeMode } from './modes/free';
 import type { Mode } from './modes/mode';
 import { createRangeMode } from './modes/range';
+import { createSongMode } from './modes/song';
+import { createSuggestMode } from './modes/suggest';
 import { createTrainerMode } from './modes/trainer';
 
-const modes: Mode[] = [createFreeMode(), createRangeMode(), createTrainerMode()];
+const modes: Mode[] = [createFreeMode(), createRangeMode(), createTrainerMode(), createSongMode(), createSuggestMode()];
 
 const tabs = document.querySelector<HTMLElement>('#tabs')!;
 const main = document.querySelector<HTMLElement>('#main')!;
@@ -50,7 +52,9 @@ engine.onPitch((p) => active.onPitch?.(p));
 
 micBtn.addEventListener('click', async () => {
   if (engine.running) {
+    active.hide?.(); // 曲の再生中なら止めて採点する
     engine.stop();
+    active.show?.();
   } else {
     try {
       status.textContent = '';
@@ -59,14 +63,22 @@ micBtn.addEventListener('click', async () => {
       status.textContent = `マイクを開始できませんでした: ${(e as Error).message}`;
     }
   }
-  micBtn.textContent = engine.running ? '■ 停止' : '🎤 マイク開始';
-  micBtn.classList.toggle('live', engine.running);
 });
+
+// 曲タブの「開始」でもマイクが始まるので、ボタン表示は毎フレーム状態に合わせる
+let micShown: boolean | null = null;
+function syncMicButton() {
+  if (micShown === engine.running) return;
+  micShown = engine.running;
+  micBtn.textContent = engine.running ? '■ マイク停止' : '🎤 マイク開始';
+  micBtn.classList.toggle('live', engine.running);
+}
 
 // 画面描画ループ。推定結果は解析窓の中心時刻なので少し遅らせて描くと線が途切れない
 function loop() {
   const now = engine.ctx ? engine.ctx.currentTime - 0.03 : performance.now() / 1000;
   active.frame?.(now);
+  syncMicButton();
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);

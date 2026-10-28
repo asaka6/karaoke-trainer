@@ -355,3 +355,256 @@ canvas.graph {
   font-size: 0.85rem;
   margin: 6px 0;
 }
+
+/* ---- 曲・選曲 共通 ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.file-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.file-btn input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+code {
+  font-size: 0.85em;
+  word-break: break-all;
+}
+
+.song-info:not(:empty) {
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.song-title {
+  font-weight: 600;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.controls .start {
+  flex: 1;
+  max-width: 240px;
+}
+
+.seek-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 8px 0;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.seek-row span {
+  flex: 0 0 auto;
+  min-width: 6.5em;
+}
+
+.seek-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.busy {
+  margin: 4px 0;
+}
+
+.now-row {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  margin: 6px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.now-row b {
+  font-size: 1.3rem;
+}
+
+.now-row .dev {
+  margin-left: auto;
+  font-weight: 600;
+}
+
+.now-row .dev[data-ok='false'] {
+  color: var(--bad);
+}
+
+canvas.song-graph {
+  height: min(42vh, 340px);
+}
+
+.settings {
+  margin: 10px 0;
+  font-size: 0.9rem;
+}
+
+.settings summary {
+  cursor: pointer;
+  color: var(--muted);
+  min-height: 32px;
+}
+
+.settings label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.settings input[type='range'] {
+  flex: 1;
+  min-width: 0;
+}
+
+.result {
+  margin-top: 12px;
+}
+
+.result h3,
+.list h3 {
+  font-size: 1rem;
+  margin: 16px 0 6px;
+}
+
+.total {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+}
+
+.total b {
+  font-size: 3rem;
+  line-height: 1.1;
+}
+
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 8px;
+  text-align: center;
+}
+
+.score-grid > div {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+}
+
+.score-grid b {
+  font-size: 1.15rem;
+}
+
+ul.sections,
+.list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.section-btn {
+  width: 100%;
+  text-align: left;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  border-left: 4px solid var(--target);
+}
+
+.section-btn[data-kind='silent'] {
+  border-left-color: var(--muted);
+}
+
+.section-btn[data-kind='sharp'],
+.section-btn[data-kind='flat'] {
+  border-left-color: var(--bad);
+}
+
+.opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 0.9rem;
+}
+
+.opts label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 36px;
+}
+
+.my-range {
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.song-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.song-item > div:first-child {
+  min-width: 0;
+}
+
+.small {
+  font-size: 0.8rem;
+}
+
+.tag {
+  flex: 0 0 auto;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.list.ok .tag {
+  color: var(--good);
+}
+
+.list.shift .tag {
+  color: var(--target);
+}
+
+.list.hard .tag {
+  color: var(--muted);
+}

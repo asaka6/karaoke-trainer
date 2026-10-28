@@ -13,10 +13,16 @@ class AudioEngine {
   readonly tracker = new PitchTracker();
   running = false;
 
-  /** URL に ?test=440 などがあればマイクの代わりにサイン波を入力（動作確認用） */
-  private testFreq(): number | null {
-    const v = new URLSearchParams(location.search).get('test');
-    return v ? parseFloat(v) : null;
+  /**
+   * 動作確認用の入力切り替え（URL パラメータ）
+   *   ?test=440   … マイクの代わりに 440Hz のサイン波
+   *   ?test=guide … マイクを使わず、曲モードのガイド音をそのまま入力にする
+   */
+  readonly testParam = new URLSearchParams(location.search).get('test');
+
+  /** ピッチ推定への入力ノード（テストでガイド音をつなぐため） */
+  get input(): AudioNode | null {
+    return this.node;
   }
 
   async ensureContext(): Promise<AudioContext> {
@@ -36,8 +42,10 @@ class AudioEngine {
       const p = this.tracker.push(e.data);
       this.listeners.forEach((l) => l(p));
     };
-    const tf = this.testFreq();
-    if (tf) {
+    const tf = this.testParam ? parseFloat(this.testParam) : NaN;
+    if (this.testParam === 'guide') {
+      // 入力は曲モード側でつなぐ
+    } else if (tf) {
       this.testOsc = ctx.createOscillator();
       this.testOsc.frequency.value = tf;
       const g = ctx.createGain();
